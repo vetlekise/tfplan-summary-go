@@ -1,7 +1,7 @@
 {
     "resource_changes": [
         {
-            "address": "resource.1",
+            "address": "resource.something['create1']",
             "change": {
                 "actions": [
                     "create"
@@ -9,7 +9,7 @@
             }
         },
         {
-            "address": "resource.2",
+            "address": "resource.something['delete1']",
             "change": {
                 "actions": [
                     "delete"
@@ -17,7 +17,7 @@
             }
         },
         {
-            "address": "resource.3",
+            "address": "resource.something['update1']",
             "change": {
                 "actions": [
                     "update"
@@ -25,7 +25,7 @@
             }
         },
         {
-            "address": "resource.4",
+            "address": "resource.something['create2']",
             "change": {
                 "actions": [
                     "create"
@@ -33,7 +33,7 @@
             }
         },
         {
-            "address": "resource.5",
+            "address": "resource.something['no-op1']",
             "change": {
                 "actions": [
                     "no-op"
@@ -41,7 +41,7 @@
             }
         },
         {
-            "address": "resource.6",
+            "address": "resource.something['replace1']",
             "change": {
                 "actions": [
                     "create",
@@ -50,7 +50,7 @@
             }
         },
         {
-            "address": "resource.7",
+            "address": "resource.something['replace2']",
             "change": {
                 "actions": [
                     "delete",
