@@ -11,6 +11,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -63,38 +64,47 @@ func validateJson(data string) (file []byte) {
 }
 
 // Aggregates data from the 'Plan' struct, unmarshals the Json file, and appends the data to table rows.
-func aggregateData(file []byte) (rowData []table.Row) {
-	// Create a map using the Plan struct
+func aggregateData(file []byte) []table.Row {
 	var result Plan
-
-	// Parse (Unmarshal) the raw data into the map
 	json.Unmarshal(file, &result)
 
-	var rows []table.Row
-	// Loop through to find your keys and values, then append them to rows
+	// Extract raw data
+	type Item struct{ Action, Address string }
+	var items []Item
+
 	for _, res := range result.ResourceChanges {
 		action := strings.Join(res.Change.Actions, " ")
 
-		// Colorize based on action type
-		coloredAction := action
-		switch action {
-		case "create":
-			coloredAction = text.FgGreen.Sprint(action)
-		case "delete":
-			coloredAction = text.FgRed.Sprint(action)
-		case "update":
-			coloredAction = text.FgYellow.Sprint(action)
-		case "no-op":
-			coloredAction = text.FgWhite.Sprint(action)
-		case "create delete":
-			action = "replace"
-			coloredAction = text.FgRed.Sprint(action)
-		case "delete create":
-			action = "replace"
-			coloredAction = text.FgRed.Sprint(action)
+		if action == "no-op" {
+			continue
 		}
 
-		rows = append(rows, table.Row{coloredAction, res.Address})
+		if action == "create delete" || action == "delete create" {
+			action = "replace"
+		}
+		items = append(items, Item{Action: action, Address: res.Address})
+	}
+
+	// Sort alphabetically by raw Action text
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].Action > items[j].Action
+	})
+
+	// Apply colors and build table rows
+	var rows []table.Row
+	for _, item := range items {
+		coloredAction := item.Action
+		switch item.Action {
+		case "create":
+			coloredAction = text.FgGreen.Sprint(item.Action)
+		case "delete", "replace":
+			coloredAction = text.FgRed.Sprint(item.Action)
+		case "update":
+			coloredAction = text.FgYellow.Sprint(item.Action)
+		case "no-op":
+			coloredAction = text.FgWhite.Sprint(item.Action)
+		}
+		rows = append(rows, table.Row{coloredAction, item.Address})
 	}
 
 	return rows
@@ -104,14 +114,19 @@ func aggregateData(file []byte) (rowData []table.Row) {
 func buildTable(rows []table.Row) {
 	tw := table.NewWriter()
 
+	tw.SetColumnConfigs([]table.ColumnConfig{
+		{Number: 1, AutoMerge: false},
+	})
+
 	// Configuration and styling
 	tw.SortBy([]table.SortBy{{Name: "Action", Mode: table.Dsc}})
-	tw.SetStyle(table.StyleLight)
+	tw.SetStyle(table.StyleDefault)
+	tw.Style().Options.SeparateRows = true
 
 	// Appending
 	tw.AppendHeader(table.Row{
-		text.Colors{text.FgWhite, text.Bold}.Sprint("Action"),
-		text.Colors{text.FgWhite, text.Bold}.Sprint("Addresses")})
+		text.Colors{text.FgWhite}.Sprint("Action"),
+		text.Colors{text.FgWhite}.Sprint("Addresses")})
 	tw.AppendRows(rows)
 
 	fmt.Println(tw.Render())
