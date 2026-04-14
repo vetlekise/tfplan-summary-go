@@ -1,3 +1,4 @@
+// Package renderer renders Terraform plan changes as a formatted table.
 package renderer
 
 import (
