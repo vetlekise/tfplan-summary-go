@@ -1,3 +1,4 @@
+// Package parser parses Terraform plan JSON into structured resource change data.
 package parser
 
 import (
@@ -6,18 +7,18 @@ import (
 	"strings"
 )
 
-// Top level object
+// Plan represents the top-level structure of a Terraform plan JSON file.
 type Plan struct {
 	ResourceChanges []ResourceChange `json:"resource_changes"`
 }
 
-// The items inside the list
+// ResourceChange represents a single resource entry in the plan.
 type ResourceChange struct {
 	Address string `json:"address"`
 	Change  Change `json:"change"`
 }
 
-// The nested object containing the actions list
+// Change holds the list of actions to be applied to a resource.
 type Change struct {
 	Actions []string `json:"actions"`
 }

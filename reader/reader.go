@@ -1,3 +1,4 @@
+// Package reader implements functions for reading Terraform Plan files.
 package reader
 
 import (
@@ -6,7 +7,8 @@ import (
 	"path/filepath"
 )
 
-// Validates the file extension '.json' of the provided file and reads it.
+// ReadPlan validates that the given path has a .json extension and returns its contents.
+// It panics if the extension is invalid and calls [log.Fatalf] if the file cannot be read.
 func ReadPlan(data string) []byte {
 
 	// Validate extension
