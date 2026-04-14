@@ -3,6 +3,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -27,11 +28,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	rows, err := parser.ParseChanges(file)
+	changes, err := parser.ParseChanges(file)
 	if err != nil {
 		slog.Error("failed to parse plan", "err", err)
 		os.Exit(1)
 	}
 
-	renderer.RenderTable(rows)
+	if len(changes) == 0 {
+		fmt.Println("No changes.")
+		return
+	}
+
+	renderer.RenderTable(changes)
 }
