@@ -5,12 +5,11 @@ import (
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
-	//"github.com/jedib0t/go-pretty/v6/list"
-	//"github.com/jedib0t/go-pretty/v6/progress"
+	"github.com/vetlekise/tfplan-summary-go/parser"
 )
 
-// Builds a table using the 'table' package and prints it.
-func RenderTable(rows []table.Row) {
+// RenderTable renders a table of resource changes to stdout.
+func RenderTable(changes []parser.ResourceDiff) {
 	tw := table.NewWriter()
 
 	tw.SetColumnConfigs([]table.ColumnConfig{
@@ -22,11 +21,22 @@ func RenderTable(rows []table.Row) {
 	tw.SetStyle(table.StyleDefault)
 	tw.Style().Options.SeparateRows = true
 
-	// Appending
 	tw.AppendHeader(table.Row{
 		text.Colors{text.FgWhite}.Sprint("Action"),
 		text.Colors{text.FgWhite}.Sprint("Address")})
-	tw.AppendRows(rows)
+
+	for _, change := range changes {
+		coloredAction := change.Action
+		switch change.Action {
+		case "create":
+			coloredAction = text.FgGreen.Sprint(change.Action)
+		case "delete", "replace":
+			coloredAction = text.FgRed.Sprint(change.Action)
+		case "update":
+			coloredAction = text.FgYellow.Sprint(change.Action)
+		}
+		tw.AppendRow(table.Row{coloredAction, change.Address})
+	}
 
 	fmt.Println(tw.Render())
 }
