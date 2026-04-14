@@ -47,6 +47,8 @@ func ParseChanges(file []byte) ([]ResourceDiff, error) {
 			continue
 		}
 
+		// Terraform represents replace as two actions ("create delete" or "delete create").
+		// Normalize these to a single "replace" for cleaner output.
 		if action == "create delete" || action == "delete create" {
 			action = "replace"
 		}
