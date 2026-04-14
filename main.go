@@ -3,6 +3,8 @@ package main
 
 import (
 	"flag"
+	"log/slog"
+	"os"
 
 	"github.com/vetlekise/tfplan-summary-go/parser"
 	"github.com/vetlekise/tfplan-summary-go/reader"
@@ -18,7 +20,18 @@ func init() {
 
 func main() {
 	data := planPath
-	file := reader.ReadPlan(data)
-	rows := parser.ParseChanges(file)
+
+	file, err := reader.ReadPlan(data)
+	if err != nil {
+		slog.Error("failed to read plan", "err", err)
+		os.Exit(1)
+	}
+
+	rows, err := parser.ParseChanges(file)
+	if err != nil {
+		slog.Error("failed to parse plan", "err", err)
+		os.Exit(1)
+	}
+
 	renderer.RenderTable(rows)
 }

@@ -3,6 +3,7 @@ package parser
 
 import (
 	"encoding/json"
+	"fmt"
 	"sort"
 	"strings"
 )
@@ -30,9 +31,12 @@ type ResourceDiff struct {
 }
 
 // ParseChanges parses a Terraform plan JSON and returns a list of resource changes.
-func ParseChanges(file []byte) []ResourceDiff {
+func ParseChanges(file []byte) ([]ResourceDiff, error) {
 	var result Plan
-	json.Unmarshal(file, &result)
+
+	if err := json.Unmarshal(file, &result); err != nil {
+		return nil, fmt.Errorf("parse plan: %w", err)
+	}
 
 	var items []ResourceDiff
 
@@ -54,5 +58,5 @@ func ParseChanges(file []byte) []ResourceDiff {
 		return items[i].Action > items[j].Action
 	})
 
-	return items
+	return items, nil
 }
