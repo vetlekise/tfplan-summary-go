@@ -27,7 +27,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	rows := parser.ParseChanges(file)
+	rows, err := parser.ParseChanges(file)
+	if err != nil {
+		slog.Error("failed to parse plan", "err", err)
+		os.Exit(1)
+	}
 
 	renderer.RenderTable(rows)
 }
