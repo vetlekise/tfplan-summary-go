@@ -7,14 +7,14 @@ import (
 )
 
 func Test_ParseChanges(t *testing.T) {
-	// TODO: Test 'replace' normalization
 	// TODO: Test JSON unmarshaling
 	// TODO: Test sorting
 
 	data := []struct {
-		name  string
-		input []byte
-		want  []ResourceDiff
+		name    string
+		input   []byte
+		want    []ResourceDiff
+		wantErr bool
 	}{
 		{
 			name:  "filters no-op",
@@ -29,6 +29,17 @@ func Test_ParseChanges(t *testing.T) {
 				{Action: "replace", Address: "resource.something['replace2']"},
 			},
 		},
+		{
+			name:    "invalid json",
+			input:   []byte(`not json`),
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:  "empty plan",
+			input: []byte(`{"resource_changes":[]}`),
+			want:  nil,
+		},
 	}
 
 	for _, d := range data {
@@ -36,12 +47,14 @@ func Test_ParseChanges(t *testing.T) {
 		t.Run(d.name, func(t *testing.T) {
 			got, err := ParseChanges(d.input)
 
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
+			if (err != nil) != d.wantErr {
+				t.Fatalf("got err=%v, wantErr=%v", err, d.wantErr)
 			}
 
-			if diff := cmp.Diff(d.want, got); diff != "" {
-				t.Errorf("mismatch (-want +got):\n%s", diff)
+			if !d.wantErr {
+				if diff := cmp.Diff(d.want, got); diff != "" {
+					t.Errorf("mismatch (-want +got):\n%s", diff)
+				}
 			}
 		})
 	}
