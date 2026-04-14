@@ -7,9 +7,6 @@ import (
 )
 
 func Test_ParseChanges(t *testing.T) {
-	// TODO: Test JSON unmarshaling
-	// TODO: Test sorting
-
 	data := []struct {
 		name    string
 		input   []byte
@@ -39,6 +36,15 @@ func Test_ParseChanges(t *testing.T) {
 			name:  "empty plan",
 			input: []byte(`{"resource_changes":[]}`),
 			want:  nil,
+		},
+		{
+			name:  "sorting",
+			input: []byte(`{"resource_changes":[{"address":"resource.1","change":{"actions":["create"]}},{"address":"resource.2","change":{"actions":["delete"]}},{"address":"resource.3","change":{"actions":["update"]}}]}`),
+			want: []ResourceDiff{
+				{Action: "update", Address: "resource.3"},
+				{Action: "delete", Address: "resource.2"},
+				{Action: "create", Address: "resource.1"},
+			},
 		},
 	}
 
