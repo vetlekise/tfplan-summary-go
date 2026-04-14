@@ -4,18 +4,20 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+
 	//"github.com/jedib0t/go-pretty/v6/list"
 	//"github.com/jedib0t/go-pretty/v6/progress"
-	"github.com/jedib0t/go-pretty/v6/table"
-	"github.com/jedib0t/go-pretty/v6/text"
 	"log"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/jedib0t/go-pretty/v6/text"
 )
 
-var pathFlag string
+var planPath string
 
 // Top level object
 type Plan struct {
@@ -34,19 +36,19 @@ type Change struct {
 }
 
 func init() {
-	flag.StringVar(&pathFlag, "path", "tfplan.json", "Path to your Terraform Plan .json file.")
+	flag.StringVar(&planPath, "path", "tfplan.json", "Path to your Terraform Plan .json file.")
 	flag.Parse()
 }
 
 func main() {
-	data := pathFlag
-	file := validateJson(data)
-	rows := aggregateData(file)
-	buildTable(rows)
+	data := planPath
+	file := ValidateJSON(data)
+	rows := ParseChanges(file)
+	RenderTable(rows)
 }
 
 // Validates the file extension '.json' of the provided file and reads it.
-func validateJson(data string) (file []byte) {
+func ValidateJSON(data string) []byte {
 
 	// Validate extension
 	fileExtension := filepath.Ext(data)
@@ -60,11 +62,11 @@ func validateJson(data string) (file []byte) {
 		log.Fatalf("Failed to open file: %v", err)
 	}
 
-	return
+	return file
 }
 
 // Aggregates data from the 'Plan' struct, unmarshals the Json file, and appends the data to table rows.
-func aggregateData(file []byte) []table.Row {
+func ParseChanges(file []byte) []table.Row {
 	var result Plan
 	json.Unmarshal(file, &result)
 
@@ -111,7 +113,7 @@ func aggregateData(file []byte) []table.Row {
 }
 
 // Builds a table using the 'table' package and prints it.
-func buildTable(rows []table.Row) {
+func RenderTable(rows []table.Row) {
 	tw := table.NewWriter()
 
 	tw.SetColumnConfigs([]table.ColumnConfig{
@@ -126,7 +128,7 @@ func buildTable(rows []table.Row) {
 	// Appending
 	tw.AppendHeader(table.Row{
 		text.Colors{text.FgWhite}.Sprint("Action"),
-		text.Colors{text.FgWhite}.Sprint("Addresses")})
+		text.Colors{text.FgWhite}.Sprint("Address")})
 	tw.AppendRows(rows)
 
 	fmt.Println(tw.Render())
