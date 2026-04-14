@@ -7,9 +7,8 @@ import (
 )
 
 func Test_ParseChanges(t *testing.T) {
-	// TODO: Test JSON unmarshaling
-	// TODO: Test 'no-op' filtering
 	// TODO: Test 'replace' normalization
+	// TODO: Test JSON unmarshaling
 	// TODO: Test sorting
 
 	data := []struct {
@@ -21,6 +20,14 @@ func Test_ParseChanges(t *testing.T) {
 			name:  "filters no-op",
 			input: []byte(`{"resource_changes":[{"address":"resource.1","change":{"actions":["no-op"]}}]}`),
 			want:  nil,
+		},
+		{
+			name:  "replace normalization",
+			input: []byte(`{"resource_changes":[{"address":"resource.something['replace1']","change":{"actions":["create","delete"]}},{"address":"resource.something['replace2']","change":{"actions":["delete","create"]}}]}`),
+			want: []ResourceDiff{
+				{Action: "replace", Address: "resource.something['replace1']"},
+				{Action: "replace", Address: "resource.something['replace2']"},
+			},
 		},
 	}
 
