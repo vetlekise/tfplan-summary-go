@@ -1,0 +1,22 @@
+{
+    "resource_changes": [
+        {
+            "address": "resource.something['replace1']",
+            "change": {
+                "actions": [
+                    "create",
+                    "delete"
+                ]
+            }
+        },
+        {
+            "address": "resource.something['replace2']",
+            "change": {
+                "actions": [
+                    "delete",
+                    "create"
+                ]
+            }
+        }
+    ]
+}

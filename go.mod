@@ -2,7 +2,10 @@ module github.com/vetlekise/tfplan-summary-go
 
 go 1.25.1
 
-require github.com/jedib0t/go-pretty/v6 v6.7.8
+require (
+	github.com/google/go-cmp v0.7.0
+	github.com/jedib0t/go-pretty/v6 v6.7.8
+)
 
 require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
