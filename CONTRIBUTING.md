@@ -22,6 +22,12 @@ PR titles must follow the [Conventional Commits](https://www.conventionalcommits
 
 ```
 <type>: <description>
+
+feat(ui): Add `Button` component
+^    ^    ^
+|    |    |__ Subject
+|    |_______ Scope
+|____________ Type
 ```
 
 Common types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`.
