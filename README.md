@@ -3,7 +3,7 @@ A Go command-line utility that parses and prints a summary of the Terraform plan
 
 ## Installation
 
-**Using `go install`:**
+**Using Go:**
 
 ```sh
 go install github.com/vetlekise/tfplan-summary-go@latest
