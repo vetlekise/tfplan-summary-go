@@ -13,3 +13,15 @@
 task build   # build binary to bin/
 task check   # run fmt, vet, lint, vuln, and test
 ```
+
+## Pull Requests
+
+This project uses **squash merges**, so the PR title becomes the single commit message on `main` and is used to generate the changelog on release.
+
+PR titles must follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+```
+<type>: <description>
+```
+
+Common types: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`.
