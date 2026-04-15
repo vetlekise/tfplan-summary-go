@@ -1,4 +1,4 @@
-// Package main is the entry point for the tfplan-summary tool.
+// Package main is the entry point for the tfsummary tool.
 package main
 
 import (
