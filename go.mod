@@ -1,4 +1,4 @@
-module github.com/vetlekise/tfplan-summary-go
+module github.com/vetlekise/tfsummary
 
 go 1.25.1
 

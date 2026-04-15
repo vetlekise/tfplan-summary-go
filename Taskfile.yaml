@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  BINARY: tfplan-summary-go
+  BINARY: tfsummary
 
 tasks:
   fmt:

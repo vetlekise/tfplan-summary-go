@@ -7,9 +7,9 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/vetlekise/tfplan-summary-go/parser"
-	"github.com/vetlekise/tfplan-summary-go/reader"
-	"github.com/vetlekise/tfplan-summary-go/renderer"
+	"github.com/vetlekise/tfsummary/parser"
+	"github.com/vetlekise/tfsummary/reader"
+	"github.com/vetlekise/tfsummary/renderer"
 )
 
 var planPath string
